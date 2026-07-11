@@ -7,7 +7,6 @@ def get_connection():
         user=Config.DB_USER,
         password=Config.DB_PASSWORD,
         database=Config.DB_NAME,
-        port=int(getattr(Config, "DB_PORT", 3306)),
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=False
     )

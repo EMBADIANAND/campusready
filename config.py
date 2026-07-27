@@ -26,9 +26,11 @@ class Config:
     # ── CORS ───────────────────────────────────────────
     # FIX: restrict to known origins only
     ALLOWED_ORIGINS = os.getenv(
-        "ALLOWED_ORIGINS",
-        "http://localhost:5500,http://127.0.0.1:5500"
-    ).split(",")
+    "ALLOWED_ORIGINS",
+    "http://localhost:5500,"
+    "http://127.0.0.1:5500,"
+    "https://campusready-frontend.onrender.com"
+).split(",")
 
     # ── Admin ──────────────────────────────────────────
     # FIX: admin credentials from env, not hardcoded

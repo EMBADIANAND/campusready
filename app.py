@@ -11,40 +11,34 @@ from routes.company import company_bp
 from routes.quiz import quiz_bp
 from routes.admin import admin_bp
 
-# ── Logging setup ──────────────────────────────────────
+# Logging setup
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
 )
 
-# ── Flask app ──────────────────────────────────────────
+# Create Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# ── CORS Configuration (FIXED) ─────────────────────────
+# Enable CORS
 CORS(
     app,
-    resources={
-        r"/api/*": {
-            "origins": Config.ALLOWED_ORIGINS
-        }
-    },
-    supports_credentials=True,
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"]
+    resources={r"/api/*": {"origins": Config.ALLOWED_ORIGINS}},
+    supports_credentials=True
 )
 
-# ── Extensions ─────────────────────────────────────────
+# Extensions
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-# ── Blueprints ─────────────────────────────────────────
+# Register blueprints
 app.register_blueprint(student_bp, url_prefix='/api/student')
 app.register_blueprint(company_bp, url_prefix='/api/company')
 app.register_blueprint(quiz_bp, url_prefix='/api/quiz')
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
 
-# ── JWT error handlers ─────────────────────────────────
+# JWT error handlers
 @jwt.unauthorized_loader
 def missing_token(reason):
     return {'error': 'Login required'}, 401
@@ -60,7 +54,7 @@ def expired_token(jwt_header, jwt_payload):
     return {'error': 'Session expired, please login again'}, 401
 
 
-# ── Health check ───────────────────────────────────────
+# Health check
 @app.route('/')
 def home():
     return {
@@ -69,7 +63,6 @@ def home():
     }
 
 
-# ── Run locally ────────────────────────────────────────
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

@@ -1,4 +1,3 @@
-```python
 import logging
 from flask import Flask
 from flask_cors import CORS
@@ -69,4 +68,3 @@ if __name__ == '__main__':
         port=5000,
         debug=Config.DEBUG
     )
-```

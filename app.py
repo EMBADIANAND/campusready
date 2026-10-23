@@ -1,4 +1,5 @@
 import logging
+import os
 from flask import Flask
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -36,6 +37,14 @@ app.register_blueprint(student_bp, url_prefix='/api/student')
 app.register_blueprint(company_bp, url_prefix='/api/company')
 app.register_blueprint(quiz_bp, url_prefix='/api/quiz')
 app.register_blueprint(admin_bp, url_prefix='/api/admin')
+
+# Create tables (and seed quiz questions) on startup if missing
+if os.getenv("AUTO_INIT_DB", "true").lower() == "true":
+    try:
+        from init_db import init_db
+        init_db()
+    except Exception as e:
+        logging.getLogger("app").error("Database init failed: %s", e)
 
 # JWT error handlers
 @jwt.unauthorized_loader

@@ -4,7 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required
 from config import Config
 from database import get_connection
-from utils import server_error, admin_required, sanitize_str, validate_email
+from utils import server_error, admin_required, sanitize_str, validate_email, is_missing
 
 logger   = logging.getLogger(__name__)
 admin_bp = Blueprint('admin', __name__)
@@ -95,7 +95,7 @@ def update_student(student_id):
 
     required = ['name', 'branch', 'year', 'cgpa']
     for field in required:
-        if not data.get(field):
+        if is_missing(data.get(field)):
             return jsonify({'error': f'{field} is required'}), 400
 
     from utils import validate_cgpa
@@ -195,7 +195,7 @@ def add_question():
 
     required = ['topic','question','option1','option2','option3','option4','correct_answer']
     for field in required:
-        if data.get(field) is None:
+        if is_missing(data.get(field)):
             return jsonify({'error': f'{field} is required'}), 400
 
     valid_topics = {'aptitude','reasoning','coding','communication'}

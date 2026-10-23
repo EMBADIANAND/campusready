@@ -200,8 +200,11 @@ def remove_shortlist(student_id):
                 DELETE FROM shortlists
                 WHERE company_id = %s AND student_id = %s
             """, (company_id, student_id))
+            removed = cursor.rowcount
             conn.commit()
 
+        if not removed:
+            return jsonify({'error': 'Student is not in your shortlist'}), 404
         return jsonify({'message': 'Removed from shortlist'}), 200
 
     except Exception as e:

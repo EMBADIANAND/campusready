@@ -28,6 +28,16 @@ def company_required(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+def company_or_admin_required(fn):
+    """Allow only company or admin JWT tokens."""
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        identity = get_jwt_identity()
+        if not identity or not identity.startswith(('company_', 'admin_')):
+            return jsonify({'error': 'Companies and admins only'}), 403
+        return fn(*args, **kwargs)
+    return wrapper
+
 def admin_required(fn):
     """Allow only admin JWT tokens."""
     @wraps(fn)
@@ -57,6 +67,10 @@ def validate_cgpa(value) -> tuple:
         return cgpa, None
     except (TypeError, ValueError):
         return None, 'CGPA must be a number'
+
+def is_missing(value) -> bool:
+    """True for None or blank strings; 0 counts as a real value."""
+    return value is None or (isinstance(value, str) and not value.strip())
 
 def sanitize_str(value: str, max_len: int = 200) -> str:
     """Strip whitespace and truncate."""
